@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Website</title>
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul>
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="">Sign Up</a></li>
+                <li><a href="signin.form.html">Sign In</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section id="signup" class="signup">
+        <h2>Sign Up</h2>
+        <form id="signupForm">
+            <label for="signupUsername">Username:</label>
+            <input type="text" id="signupUsername" name="signupUsername" required>
+            <div id="usernameRequirements">
+                <p>Username can include:</p>
+                <ul>
+                    <li id="usernameChars" class="invalid">Letters, numbers, dots, and underscores</li>
+                    <li id="usernameLength" class="invalid">At least 3, at most 10</li>
+                </ul>
+            </div>
+            <label for="signupEmail">Email:</label>
+            <input type="email" id="signupEmail" name="signupEmail" required>
+            <label for="signupPassword">Password:</label>
+            <input type="password" id="signupPassword" name="signupPassword" required>
+            <button type="button" id="showPasswordButton" class="show">Show</button><br><br>
+            <div id="passwordRequirements">
+                <p>Password must include:</p>
+                <ul>
+                    <li id="lowercase" class="invalid">At least one lowercase letter</li>
+                    <li id="uppercase" class="invalid">At least one uppercase letter</li>
+                    <li id="digit" class="invalid">At least one digit</li>
+                    <li id="length" class="invalid">At least 8, at most 15</li>
+                </ul>
+            </div>
+
+            <button type="submit">Sign Up</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Proscurchin Inc. All rights reserved.</p>
+    </footer>
+</body>
+</html>

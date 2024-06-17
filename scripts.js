@@ -1,3 +1,4 @@
+if (document.getElementById('showPasswordButton'))
 document.getElementById('showPasswordButton').addEventListener('click', function() {
     const passwordInput = document.getElementById('signupPassword');
     if (passwordInput.type === 'password') {
@@ -13,8 +14,15 @@ document.getElementById('showPasswordButton').addEventListener('click', function
     }
 });
 
-document.getElementById('signupPassword').addEventListener('input', function() {
-    const password = this.value;
+if (document.getElementById('signupPassword'))
+document.addEventListener('DOMContentLoaded', function() {
+    const signupPassword = document.getElementById('signupPassword');
+    const signupUsername = document.getElementById('signupUsername');
+    const passwordRequirementsContainer = document.getElementById('passwordRequirements');
+    const usernameRequirementsContainer = document.getElementById('usernameRequirements');
+    
+    passwordRequirementsContainer.style.display = 'none';
+    usernameRequirementsContainer.style.display = 'none';
 
     const passwordRequirements = [
         { regex: /(?=.*[a-z])/, element: document.getElementById('lowercase') },
@@ -23,95 +31,109 @@ document.getElementById('signupPassword').addEventListener('input', function() {
         { regex: /^.{8,15}$/, element: document.getElementById('length') },
     ];
 
-    passwordRequirements.forEach(req => {
-        if (req.regex.test(password)) {
-            req.element.classList.add('valid');
-            req.element.classList.remove('invalid');
-        } else {
-            req.element.classList.add('invalid');
-            req.element.classList.remove('valid');
-        }
-    });
-});
-
-//^[a-zA-Z0-9._]{3,10}$/
-document.getElementById('signupUsername').addEventListener('input', function() {
-    const username = this.value;
-
     const usernameRequirements = [
         { regex: /^[a-zA-Z0-9._]+$/, element: document.getElementById('usernameChars') },
         { regex: /^.{3,10}$/, element: document.getElementById('usernameLength') },
     ];
 
-    usernameRequirements.forEach(req => {
-        if (req.regex.test(username)) {
-            req.element.classList.add('valid');
-            req.element.classList.remove('invalid');
-        } else {
-            req.element.classList.add('invalid');
-            req.element.classList.remove('valid');
-        }
-    });
-});
+    if (signupPassword) {
+        signupPassword.addEventListener('input', function() {
+            const password = this.value;
+            let invalidFound = false;
 
-document.getElementById('signupForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+            passwordRequirements.forEach(req => {
+                if (req.regex.test(password)) {
+                    req.element.classList.add('valid');
+                    req.element.classList.remove('invalid');
+                    req.element.style.display = 'none';
+                } else {
+                    req.element.classList.add('invalid');
+                    req.element.classList.remove('valid');
+                    req.element.style.display = 'list-item';
+                    invalidFound = true;
+                }
+            });
 
-    const username = document.getElementById('signupUsername').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const password = document.getElementById('signupPassword').value.trim();
-    
-    const passwordRequirements = [
-        { regex: /(?=.*[a-z])/, elementId: 'lowercase' },
-        { regex: /(?=.*[A-Z])/, elementId: 'uppercase' },
-        { regex: /(?=.*\d)/, elementId: 'digit' },
-        { regex: /^.{8,15}$/, elementId: 'length' },
-    ];
+            passwordRequirementsContainer.style.display = invalidFound ? 'block' : 'none';
+        });
+    }
 
-    const usernameRequirements = [
-        { regex: /^[a-zA-Z0-9._]+$/, element: document.getElementById('usernameChars') },
-        { regex: /^.{3,10}$/, element: document.getElementById('usernameLength') },
-    ];
+    if (signupUsername) {
+        signupUsername.addEventListener('input', function() {
+            const username = this.value;
+            let invalidFound = false;
 
-    const passwordErrors = passwordRequirements.filter(req => !req.regex.test(password)).map(req => req.elementId);    
-    const usernameErrors = usernameRequirements.filter(req => !req.regex.test(username)).map(req => req.elementId);    
+            usernameRequirements.forEach(req => {
+                if (req.regex.test(username)) {
+                    req.element.classList.add('valid');
+                    req.element.classList.remove('invalid');
+                    req.element.style.display = 'none';
+                } else {
+                    req.element.classList.add('invalid');
+                    req.element.classList.remove('valid');
+                    req.element.style.display = 'list-item';
+                    invalidFound = true;
+                }
+            });
 
+            usernameRequirementsContainer.style.display = invalidFound ? 'block' : 'none';
+        });
+    }
 
-    if (usernameErrors.length > 0) {
-        requirements.forEach(req => {
-            const requirementElement = document.getElementById(req.elementId);
-            if (req.regex.test(username)) {
-                requirementElement.classList.add('valid');
-                requirementElement.classList.remove('invalid');
-            } else {
-                requirementElement.classList.add('invalid');
-                requirementElement.classList.remove('valid');
+    if (document.getElementById('signupForm')) {
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const username = signupUsername.value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = signupPassword.value.trim();
+            
+            const passwordErrors = passwordRequirements.filter(req => !req.regex.test(password)).map(req => req.element);
+            const usernameErrors = usernameRequirements.filter(req => !req.regex.test(username)).map(req => req.element);
+
+            let valid = true;
+
+            if (usernameErrors.length > 0) {
+                usernameErrors.forEach(el => {
+                    el.classList.add('invalid');
+                    el.classList.remove('valid');
+                    el.style.display = 'list-item';
+                });
+                usernameRequirementsContainer.style.display = 'block';
+                alert('Please enter a valid username.');
+                valid = false;
+            }
+
+            if (!validateEmail(email)) {
+                alert('Please enter a valid email address.');
+                valid = false;
+            }
+
+            if (passwordErrors.length > 0) {
+                passwordErrors.forEach(el => {
+                    el.classList.add('invalid');
+                    el.classList.remove('valid');
+                    el.style.display = 'list-item';
+                });
+                passwordRequirementsContainer.style.display = 'block';
+                alert('Please enter a valid password.');
+                valid = false;
+            }
+
+            if (valid) {
+                alert('Sign Up form submitted successfully!');
+                // Add your form submission logic here
             }
         });
     }
 
-    if (!validateEmail(email)) {
-        alert('Please enter a valid email address.');
-        return;
-    }
-
-    if (passwordErrors.length > 0) {
-        requirements.forEach(req => {
-            const requirementElement = document.getElementById(req.elementId);
-            if (req.regex.test(password)) {
-                requirementElement.classList.add('valid');
-                requirementElement.classList.remove('invalid');
-            } else {
-                requirementElement.classList.add('invalid');
-                requirementElement.classList.remove('valid');
-            }
-        });
-    } else {
-        alert('Sign Up form submitted successfully!');
-        // Add your form submission logic here
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
     }
 });
 
+if (document.getElementById('signinForm'))
 document.getElementById('signinForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -132,6 +154,7 @@ document.getElementById('signinForm').addEventListener('submit', function(event)
     // Add your form submission logic here
 });
 
+if (document.getElementById('contactForm'))
 document.getElementById('contactForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -173,12 +196,13 @@ function validatePassword(password) {
     return passwordRegex.test(password);
 }
 
-document.querySelectorAll('nav ul li a').forEach(anchor => {
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(event) {
         event.preventDefault();
 
         const targetId = this.getAttribute('href').substring(1);
         const targetElement = document.getElementById(targetId);
+        if (targetElement) {
         const headerOffset = 67;
         const elementPosition = targetElement.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -187,6 +211,7 @@ document.querySelectorAll('nav ul li a').forEach(anchor => {
             top: offsetPosition,
             behavior: 'smooth'
         });
+        }
     });
 });
 
@@ -195,13 +220,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const navMenu = document.querySelector('nav ul');
     const navLinks = document.querySelectorAll('nav ul li a');
 
-    // Toggle menu and hamburger icon
     menuToggle.addEventListener('click', function() {
         navMenu.classList.toggle('active');
         menuToggle.classList.toggle('active');
     });
 
-    // Close menu when a link is clicked
     navLinks.forEach(link => {
         link.addEventListener('click', function() {
             navMenu.classList.remove('active');

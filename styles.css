@@ -72,6 +72,13 @@ p {
 .home p {
     font-size: 1.2em;
 }
+ 
+.signup, .signin {
+
+    padding-top: 110px;
+    margin: 0;
+    min-height: calc(100vh - 110px - 4em - 50px);
+}
 
 section {
     padding: 4em 3em;
@@ -178,7 +185,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 }
 
 #passwordRequirements ul, #usernameRequirements ul {
-    list-style: none;
     padding-left: 1em;
 }
 
